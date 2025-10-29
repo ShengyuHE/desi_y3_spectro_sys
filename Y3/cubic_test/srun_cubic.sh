@@ -22,7 +22,7 @@ run_srun() {
             ;;
         2pt)
             # srun -n 1 -c 128 -C gpu -t 04:00:00 --gpus 4 --qos interactive --account desi python compute_cubic_recon2pt.py
-            srun -n 1 -c 128 -C gpu -t 04:00:00 --gpus 4 --qos interactive --account desi python compute_cubic_2pt.py 
+            srun -n 1 -c 128 -C gpu -t 04:00:00 --gpus 4 --qos interactive --account desi python compute_cubic_2pt.py --tracer 'QSO'
             ;;
         3pt)
             srun -n 1 -c 128 -C cpu -t 04:00:00 --qos interactive --account desi python compute_cubic_3pt.py 

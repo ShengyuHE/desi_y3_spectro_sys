@@ -25,56 +25,56 @@ smuedges  = (np.linspace(0., 200, 201), np.linspace(-1., 1., 201))
 slogmuedges= (np.geomspace(0.01, 100., 100), np.linspace(-1., 1., 201))
 rplogedges = (np.geomspace(0.01, 100., 100), np.linspace(-1., 1., 201))
 
-Z_VSMEAR = REDSHIFT_LSS_VSMEAR # REDSHIFT_VSMEAR or REDSHIFT_LSS_VSMEAR (LSS z bins)
-Z_CUBIC = REDSHIFT_LSS_CUBICBOX # REDSHIFT_CUBICBOX or REDSHIFT_LSS_CUBICBOX
+Z_VSMEAR = REDSHIFT_VSMEAR # REDSHIFT_VSMEAR or REDSHIFT_LSS_VSMEAR (LSS z bins)
+Z_CUBIC = REDSHIFT_CUBICBOX # REDSHIFT_CUBICBOX or REDSHIFT_LSS_CUBICBOX
 
 def statistics_2pt(data_positions, shifted_positions, fn, **args):
     boxsize = args.get('boxsize', 2000)
     los = args.get('los', 'z')
     recon = args.get('recon', False)
-    # # compute mps
-    # fn_mps = fn.format('xipoles')
-    # if not os.path.exists(fn_mps):
-    #     result_mps = TwoPointCorrelationFunction('smu', smuedges, data_positions1=data_positions, 
-    #                                                 shifted_positions1 = shifted_positions, 
-    #                                                 engine='corrfunc', 
-    #                                                 boxsize=boxsize, los=los, position_type='xyz',
-    #                                                 gpu=True, nthreads = 4)
-    #                                             #  mpiroot=mpiroot, mpicomm=mpicomm)
-    #     result_mps.save(fn_mps)
-    # else:
-    #     result_mps = TwoPointCorrelationFunction.load(fn_mps)
+    # compute mps
+    fn_mps = fn.format('xipoles')
+    if not os.path.exists(fn_mps):
+        result_mps = TwoPointCorrelationFunction('smu', smuedges, data_positions1=data_positions, 
+                                                    shifted_positions1 = shifted_positions, 
+                                                    engine='corrfunc', 
+                                                    boxsize=boxsize, los=los, position_type='xyz',
+                                                    gpu=True, nthreads = 4)
+                                                #  mpiroot=mpiroot, mpicomm=mpicomm)
+        result_mps.save(fn_mps)
+    else:
+        result_mps = TwoPointCorrelationFunction.load(fn_mps)
     # compute pk
-    # fn_pk = fn.format('pkpoles')
-    # if not os.path.exists(fn_pk):
-    #     result_pk = CatalogFFTPower(data_positions1=data_positions, 
-    #                                 shifted_positions1 = shifted_positions, 
-    #                                 edges=kedges, ells=ells, interlacing=3, 
-    #                                 boxsize=boxsize, nmesh=512, resampler='tsc',los=los, position_type='xyz',)
-    #                                 # mpiroot=mpiroot, mpicomm=mpicomm)
-    #     result_pk.save(fn_pk)
-    # else:
-    #     result_pk = CatalogFFTPower.load(fn_pk)
-    # # compute mps log scales
-    if recon == False:
-        fn_mpslog = fn.format('mpslog')
-        if not os.path.exists(fn_mpslog):
-            result_mps = TwoPointCorrelationFunction('smu', slogmuedges, data_positions1=data_positions,
-                                                    engine='corrfunc', boxsize=boxsize, los=los, position_type='xyz',
-                                                    gpu=True, nthreads = 4,)
-                                                    #  mpiroot=mpiroot, mpicomm=mpicomm)
-            result_mps.save(fn_mpslog)
-        else:
-            result_mps = TwoPointCorrelationFunction.load(fn_mpslog)
-    # compute projected correlation function wp
-    if recon == False:
-        fn_wplog = fn.format('wplog')
-        if not os.path.exists(fn_wplog):
-            result_wp = TwoPointCorrelationFunction('rppi', rplogedges, data_positions1=data_positions, 
-                                                    engine='corrfunc', boxsize=boxsize, los=los, position_type='xyz', nthreads = 4,)
-            result_wp.save(fn_wplog)
-        else:
-            result_wp = TwoPointCorrelationFunction.load(fn_wplog)
+    fn_pk = fn.format('pkpoles')
+    if not os.path.exists(fn_pk):
+        result_pk = CatalogFFTPower(data_positions1=data_positions, 
+                                    shifted_positions1 = shifted_positions, 
+                                    edges=kedges, ells=ells, interlacing=3, 
+                                    boxsize=boxsize, nmesh=512, resampler='tsc',los=los, position_type='xyz',)
+                                    # mpiroot=mpiroot, mpicomm=mpicomm)
+        result_pk.save(fn_pk)
+    else:
+        result_pk = CatalogFFTPower.load(fn_pk)
+    # compute mps log scales
+    # if recon == False:
+    #     fn_mpslog = fn.format('mpslog')
+    #     if not os.path.exists(fn_mpslog):
+    #         result_mps = TwoPointCorrelationFunction('smu', slogmuedges, data_positions1=data_positions,
+    #                                                 engine='corrfunc', boxsize=boxsize, los=los, position_type='xyz',
+    #                                                 gpu=True, nthreads = 4,)
+    #                                                 #  mpiroot=mpiroot, mpicomm=mpicomm)
+    #         result_mps.save(fn_mpslog)
+    #     else:
+    #         result_mps = TwoPointCorrelationFunction.load(fn_mpslog)
+    # # compute projected correlation function wp
+    # if recon == False:
+    #     fn_wplog = fn.format('wplog')
+    #     if not os.path.exists(fn_wplog):
+    #         result_wp = TwoPointCorrelationFunction('rppi', rplogedges, data_positions1=data_positions, 
+    #                                                 engine='corrfunc', boxsize=boxsize, los=los, position_type='xyz', nthreads = 4,)
+    #         result_wp.save(fn_wplog)
+    #     else:
+    #         result_wp = TwoPointCorrelationFunction.load(fn_wplog)
     
 def read_real_space_positions(data, redshift, cosmo = DESI()):
     Hz = cosmo.H0*cosmo.efunc(redshift)
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     Reconstruction = {'IFFT': IterativeFFTReconstruction, 'IFFTP': IterativeFFTParticleReconstruction, 'MG': MultiGridReconstruction}['IFFT']
     task = 'compute_Abacus_2pt' # Abacus, Covbox, EZmocks, QSO_test
-    corr_types = ['xi'] # for EZmocks and covcubic
+    corr_types = ['pk'] # for EZmocks and covcubic
     recons = [False]
     if 'Abacus' in task or 'test' in task:
         dataset = 'Abacus'
